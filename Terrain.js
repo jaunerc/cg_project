@@ -17,12 +17,20 @@ var ctx = {
     uColorId: -1
 };
 
-var meshObj = {
-    mesh: null,
-    modelMat: null
+var terrain = {
+    mesh: null
 };
 
-var size = 50;
+/**
+ * Basic vectors for the scene (camera settings and light)
+ */
+var scene = {
+    eyePosition: [0, 9, 0],
+    lookAtCenter: [6, 0, -1],
+    lookAtUp: [0, 0, 5],
+    lightPosition: [1, 1, 1],
+    lightColor: [1, 1, 1]
+};
 
 /**
  * Startup function to be called when the body is loaded
@@ -42,7 +50,7 @@ function initGL() {
     "use strict";
     ctx.shaderProgram = loadAndCompileShaders(gl, 'VertexShader.glsl', 'FragmentShader.glsl');
     setUpAttributesAndUniforms();
-    setUpBuffers();
+    prepareTerrain();
     gl.clearColor(0, 0, 0, 1);
 }
 
@@ -58,15 +66,18 @@ function setUpAttributesAndUniforms() {
     ctx.uModelMatId = gl.getUniformLocation(ctx.shaderProgram, "uModelMat");
 }
 
-
 /**
- * Setup the buffers to use. If more objects are needed this should be split in a file per object.
+ * Prepares the terrain. Initializes a noise calculator and the mesh.
  */
-function setUpBuffers() {
+function prepareTerrain() {
     var simplex = new NoiseCalculator();
-    meshObj.mesh = new Mesh(gl, simplex, size);
+    var size = 50;
+    terrain.mesh = new Mesh(gl, simplex, size);
 }
 
+/**
+ * Configures the projective matrix.
+ */
 function configureProjectiveMat() {
     var projectionMat = mat4.create();
     var screenRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
@@ -74,31 +85,44 @@ function configureProjectiveMat() {
     gl.uniformMatrix4fv(ctx.uProjectionMatId , false , projectionMat);
 }
 
-function prepareModelMat() {
-    meshObj.modelMat = mat4.create();
-    mat4.lookAt(meshObj.modelMat, [5, -8, 4], [5, 0, 1], [0, 1, 0]);
-    gl.uniformMatrix4fv(ctx.uModelMatId , false , meshObj.modelMat);
+/**
+ * Configures the view matrix -> camera.
+ * @returns {mat4}
+ */
+function configureViewMatrix() {
+    var viewMat = mat4.create();
+    mat4.lookAt(viewMat, scene.eyePosition, scene.lookAtCenter, scene.lookAtUp);
+    return viewMat;
+}
+
+/**
+ * Configures the model view matrix of the terrain.
+ * @param viewMat camera-view
+ */
+function configureModelMat(viewMat) {
+    var modelMat = mat4.create();
+    mat4.mul(modelMat, modelMat, viewMat);
+    gl.uniformMatrix4fv(ctx.uModelMatId , false , modelMat);
 }
 
 /**
  * Draw the scene.
  */
 function draw() {
-    "use strict";
     console.log("Drawing");
-    configureProjectiveMat();
-    prepareModelMat();
 
-    //gl.vertexAttribPointer(ctx.aVertexPositionId, 3, gl.FLOAT, false, 0, 0);
-    //gl.enableVertexAttribArray(ctx.aVertexPositionId);
-
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    // Clear the canvas
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.viewport(0,0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
+    // Do the matrix operations
+    configureProjectiveMat();
+    var viewMat = configureViewMatrix();
+    configureModelMat(viewMat);
+
+    // Set the color
     gl.uniform4f(ctx.uColorId, 1,1,1,1);
-    //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.triangleBuffer);
-    //gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0); // 3 points per triangle
 
-    meshObj.mesh.draw(gl, ctx.aVertexPositionId);
-
+    // draw the mesh
+    terrain.mesh.draw(gl, ctx.aVertexPositionId);
 }
