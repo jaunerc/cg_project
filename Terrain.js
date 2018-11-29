@@ -123,6 +123,6 @@ function draw() {
     // Set the color
     gl.uniform4f(ctx.uColorId, 1,1,1,1);
 
-    // draw the mesh
-    terrain.mesh.draw(gl, ctx.aVertexPositionId);
+    // drawMesh the mesh
+    terrain.mesh.drawMesh(gl, ctx.aVertexPositionId);
 }

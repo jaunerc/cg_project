@@ -71,13 +71,18 @@ function Mesh(gl, simplex, size) {
         bufferTriangles: defineTriangles(gl, size),
         bufferLines: defineLines(gl, size),
         size: size,
-        draw: function (gl, aVertexPositionId) {
+        drawMesh: function (gl, aVertexPositionId) {
             gl.vertexAttribPointer(aVertexPositionId, 3, gl.FLOAT, false, 0, 0);
             gl.enableVertexAttribArray(aVertexPositionId);
-            //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferTriangles);
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferLines);
             var numTriangles = (this.size-1) * (this.size-1) * 6;
-            //gl.drawElements(gl.TRIANGLES, numTriangles, gl.UNSIGNED_SHORT, 0);
+            gl.drawElements(gl.LINES, numTriangles, gl.UNSIGNED_SHORT, 0);
+        },
+        drawTriangles: function (gl, aVertexPositionId) {
+            gl.vertexAttribPointer(aVertexPositionId, 3, gl.FLOAT, false, 0, 0);
+            gl.enableVertexAttribArray(aVertexPositionId);
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferTriangles);
+            var numTriangles = 10;
             gl.drawElements(gl.LINES, numTriangles, gl.UNSIGNED_SHORT, 0);
         }
     }
