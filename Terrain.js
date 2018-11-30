@@ -25,8 +25,8 @@ var terrain = {
  * Basic vectors for the scene (camera settings and light)
  */
 var scene = {
-    eyePosition: [0, 9, 0],
-    lookAtCenter: [6, 0, -1],
+    eyePosition: [25, 55, 4],
+    lookAtCenter: [25, 40, 4],
     lookAtUp: [0, 0, 5],
     lightPosition: [1, 1, 1],
     lightColor: [1, 1, 1],
@@ -164,11 +164,11 @@ function drawAnimated(timeStamp) {
     }
     if (key._pressed["e"]){ //turn right
         scene.lookAtCenter[0] = scene.lookAtCenter[0] + scene.rotationSpeed;
-        scene.lookAtCenter[1] = scene.lookAtCenter[1] - scene.rotationSpeed;
+        scene.lookAtCenter[1] = scene.lookAtCenter[1] + scene.rotationSpeed;
     }
     if (key._pressed["q"]){ //turn left
         scene.lookAtCenter[0] = scene.lookAtCenter[0] - scene.rotationSpeed;
-        scene.lookAtCenter[1] = scene.lookAtCenter[1] + scene.rotationSpeed;
+        scene.lookAtCenter[1] = scene.lookAtCenter[1] - scene.rotationSpeed;
     }
     if (key._pressed[","]){ //up
         scene.eyePosition[2] = scene.eyePosition[2] + scene.movementSpeed;
