@@ -29,7 +29,9 @@ var scene = {
     lookAtCenter: [6, 0, -1],
     lookAtUp: [0, 0, 5],
     lightPosition: [1, 1, 1],
-    lightColor: [1, 1, 1]
+    lightColor: [1, 1, 1],
+    movementSpeed: 0.2,
+    rotationSpeed: 0.05
 };
 
 /**
@@ -40,7 +42,9 @@ function startup() {
     var canvas = document.getElementById("myCanvas");
     gl = createGLContext(canvas);
     initGL();
-    draw();
+    window.addEventListener('keyup', onKeyup, false);
+    window.addEventListener('keydown', onKeydown, false);
+    window.requestAnimationFrame(drawAnimated);
 }
 
 /**
@@ -109,7 +113,7 @@ function configureModelMat(viewMat) {
  * Draw the scene.
  */
 function draw() {
-    console.log("Drawing");
+    //console.log("Drawing");
 
     // Clear the canvas
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -125,4 +129,72 @@ function draw() {
 
     // drawMesh the mesh
     terrain.mesh.drawMesh(gl, ctx.aVertexPositionId);
+}
+
+var first = true;
+var lastTimeStamp = 0;
+function drawAnimated(timeStamp) {
+    var timeElapsed = 0;
+    if (first) {
+        lastTimeStamp = timeStamp;
+        first = false;
+    } else {
+        timeElapsed = timeStamp - lastTimeStamp;
+        lastTimeStamp = timeStamp;
+    }
+    // use the time since the last call
+    // move or change objects with it
+    if(key._pressed["w"]){
+        scene.eyePosition[1] = scene.eyePosition[1] - scene.movementSpeed;
+        scene.lookAtCenter[1] = scene.lookAtCenter[1] - scene.movementSpeed;
+    }
+    if (key._pressed["a"]){
+        scene.eyePosition[0] = scene.eyePosition[0] + scene.movementSpeed;
+        scene.lookAtCenter[0] = scene.lookAtCenter[0] + scene.movementSpeed;
+    }
+    if (key._pressed["s"]){
+        scene.eyePosition[1] = scene.eyePosition[1] + scene.movementSpeed;
+        scene.lookAtCenter[1] = scene.lookAtCenter[1] + scene.movementSpeed;
+    }
+    if (key._pressed["d"]){
+        scene.eyePosition[0] = scene.eyePosition[0] - scene.movementSpeed;
+        scene.lookAtCenter[0] = scene.lookAtCenter[0] - scene.movementSpeed;
+    }
+    if (key._pressed["e"]){ //turn right
+        scene.lookAtCenter[0] = scene.lookAtCenter[0] + scene.rotationSpeed;
+        scene.lookAtCenter[1] = scene.lookAtCenter[1] - scene.rotationSpeed;
+    }
+    if (key._pressed["q"]){ //turn left
+        scene.lookAtCenter[0] = scene.lookAtCenter[0] - scene.rotationSpeed;
+        scene.lookAtCenter[1] = scene.lookAtCenter[1] + scene.rotationSpeed;
+    }
+    if (key._pressed[","]){ //up
+        scene.eyePosition[2] = scene.eyePosition[2] + scene.movementSpeed;
+        scene.lookAtCenter[2] = scene.lookAtCenter[2] + scene.movementSpeed;
+    }
+    if (key._pressed["."]){ //down
+        scene.eyePosition[2] = scene.eyePosition[2] - scene.movementSpeed;
+        scene.lookAtCenter[2] = scene.lookAtCenter[2] - scene.movementSpeed;
+    }
+
+    draw();
+    // request the next frame
+    window.requestAnimationFrame (drawAnimated);
+}
+
+var key = {
+    _pressed: {}
+};
+
+function onKeydown(event) {
+    key._pressed[event.key] = true;
+    if (key._pressed["1"]){
+        console.log("eyePosition: "+scene.eyePosition);
+    } else if (key._pressed["2"]){
+        console.log("lookAtCenter: "+scene.lookAtCenter);
+    }
+}
+
+function onKeyup(event) {
+    delete key._pressed[event.key];
 }
