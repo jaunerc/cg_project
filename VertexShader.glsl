@@ -10,7 +10,7 @@ varying vec3 vColor;
 void main() {
     vec4 pos = vec4(aVertexPosition, 1);
 
-    vColor = aVertexPosition;
+    vColor = aVertexColor;
 
     gl_Position =  uProjectionMat * uModelMat * pos;
 }

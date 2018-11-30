@@ -28,9 +28,13 @@ function Mesh(gl, simplex, size) {
                 var v = makeNoise(j, i);
 
                 if (v < 0.5) {
-                    colors.push(1, 1, 0, 1);
+                    colors.push(1, 1, 0);
+                    colors.push(1, 1, 0);
+                    colors.push(1, 1, 0);
                 } else {
-                    colors.push(1, 0, 1, 1);
+                    colors.push(1, 0, 1);
+                    colors.push(1, 0, 1);
+                    colors.push(1, 0, 1);
                 }
             }
         }
@@ -100,10 +104,14 @@ function Mesh(gl, simplex, size) {
         bufferTriangles: defineTriangles(gl, size),
         bufferLines: defineLines(gl, size),
         size: size,
-        drawMesh: function (gl, aVertexPositionId) {
+        drawMesh: function (gl, aVertexPositionId, aVertexColorId) {
             gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferVertices);
             gl.vertexAttribPointer(aVertexPositionId, 3, gl.FLOAT, false, 0, 0);
             gl.enableVertexAttribArray(aVertexPositionId);
+
+            gl.disableVertexAttribArray(aVertexColorId);
+            gl.vertexAttrib3f(aVertexColorId, 1,1, 1);
+
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferLines);
             var numTriangles = (this.size-1) * (this.size-1) * 6;
             gl.drawElements(gl.LINES, numTriangles, gl.UNSIGNED_SHORT, 0);
@@ -112,6 +120,11 @@ function Mesh(gl, simplex, size) {
             gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferVertices);
             gl.vertexAttribPointer(aVertexPositionId, 3, gl.FLOAT, false, 0, 0);
             gl.enableVertexAttribArray(aVertexPositionId);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferColors);
+            gl.vertexAttribPointer(aVertexColorId, 3, gl.FLOAT, false, 0, 0);
+            gl.enableVertexAttribArray(aVertexColorId);
+
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferTriangles);
             var numTriangles = (this.size - 1) * (this.size - 1) * 6;
             //numTriangles = 12;
