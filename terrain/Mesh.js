@@ -20,30 +20,6 @@ function Mesh(gl, simplex, size) {
         return buffer;
     }
 
-    function defineColors(gl, size) {
-        var colors = [];
-        for (var i = 0; i < size; i++) {
-            for (var j = 0; j < size; j++) {
-                var v = makeNoise(j, i);
-
-                if (v < 0.5) {
-                    colors.push(1, 1, 0);
-                    colors.push(1, 1, 0);
-                    colors.push(1, 1, 0);
-                } else {
-                    colors.push(1, 0, 1);
-                    colors.push(1, 0, 1);
-                    colors.push(1, 0, 1);
-                }
-            }
-        }
-
-        var buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
-        return buffer;
-    }
-
     function defineLines(gl, size) {
         var lines = [];
         var a, b;
@@ -72,7 +48,6 @@ function Mesh(gl, simplex, size) {
 
     return {
         bufferVertices: defineVertices(gl, simplex, size),
-        bufferColors: defineColors(gl, size),
         bufferLines: defineLines(gl, size),
         size: size,
         drawMesh: function (gl, aVertexPositionId, aVertexColorId) {
@@ -80,6 +55,7 @@ function Mesh(gl, simplex, size) {
             gl.vertexAttribPointer(aVertexPositionId, 3, gl.FLOAT, false, 0, 0);
             gl.enableVertexAttribArray(aVertexPositionId);
 
+            // sets just one color for all lines
             gl.disableVertexAttribArray(aVertexColorId);
             gl.vertexAttrib3f(aVertexColorId, 1,1, 1);
 
