@@ -18,7 +18,8 @@ var ctx = {
 };
 
 var terrain = {
-    mesh: null
+    mesh: null,
+    plane: null
 };
 
 /**
@@ -78,6 +79,7 @@ function prepareTerrain() {
     var simplex = new NoiseCalculator();
     var size = 50;
     terrain.mesh = new Mesh(gl, simplex, size);
+    terrain.plane = new Plane(gl, simplex, size);
 }
 
 /**
@@ -116,6 +118,8 @@ function configureModelMat(viewMat) {
 function draw() {
     //console.log("Drawing");
 
+    gl.enable(gl.DEPTH_TEST);
+
     // Clear the canvas
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.viewport(0,0, gl.drawingBufferWidth, gl.drawingBufferHeight);
@@ -125,12 +129,9 @@ function draw() {
     var viewMat = configureViewMatrix();
     configureModelMat(viewMat);
 
-    // Set the color
-    gl.uniform4f(ctx.uColorId, 1,1,1,1);
-
     // drawMesh the mesh
-    terrain.mesh.drawMesh(gl, ctx.aVertexPositionId, ctx.aVertexColorId);
-    //terrain.mesh.drawTriangles(gl, ctx.aVertexPositionId, ctx.aVertexColorId);
+    //terrain.mesh.drawMesh(gl, ctx.aVertexPositionId, ctx.aVertexColorId);
+    terrain.plane.draw(gl, ctx.aVertexPositionId, ctx.aVertexColorId);
 }
 
 var first = true;

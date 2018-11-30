@@ -1,8 +1,6 @@
 precision mediump float;
 
 uniform sampler2D uSampler;
-uniform vec4 uColor;
-
 
 varying vec3 vColor;
 
