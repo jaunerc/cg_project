@@ -1,11 +1,15 @@
 
 function Mesh(gl, simplex, size) {
 
+    function makeNoise(x, z) {
+        return simplex.noise(x, z, 3, 2.0, 0.02);
+    }
+
     function defineVertices(gl, simplex, size) {
         var vertices = [];
         for (var i = 0; i < size; i++) {
             for (var j = 0; j < size; j++) {
-                var v = simplex.noise(i, j, 3, 2.0, 0.02);
+                var v = makeNoise(i, j);
                 console.log(v);
                 vertices.push(i, v, j);
             }
@@ -29,9 +33,9 @@ function Mesh(gl, simplex, size) {
                 b = i + 1;
                 c = b + size;
                 triangles.push(a, b, c);
-                a = b;
-                b = c;
-                c = a + size + 1;
+                a = i + size;
+                b = i;
+                c = a + 1;
                 triangles.push(a, b, c);
             }
             i += 1;
@@ -87,6 +91,7 @@ function Mesh(gl, simplex, size) {
             gl.enableVertexAttribArray(aVertexPositionId);
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferTriangles);
             var numTriangles = (this.size - 1) * (this.size - 1) * 6;
+            //numTriangles = 9;
             gl.drawElements(gl.TRIANGLES, numTriangles, gl.UNSIGNED_SHORT, 0);
         }
     }
