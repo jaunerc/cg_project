@@ -11,7 +11,7 @@ function Mesh(gl, simplex, size) {
             for (var j = 0; j < size; j++) {
                 var v = makeNoise(j, i);
                 console.log(v);
-                vertices.push(i, v, j);
+                vertices.push(i, j, v);
             }
         }
 

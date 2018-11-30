@@ -64,6 +64,7 @@ function initGL() {
 function setUpAttributesAndUniforms() {
     // finds the index of the variables in the program
     ctx.aVertexPositionId = gl.getAttribLocation(ctx.shaderProgram, "aVertexPosition");
+    ctx.aVertexColorId = gl.getAttribLocation(ctx.shaderProgram, "aVertexColor");
     ctx.uColorId = gl.getUniformLocation(ctx.shaderProgram, "uColor");
     ctx.uProjectionMatId = gl.getUniformLocation(ctx.shaderProgram, "uProjectionMat");
     ctx.aVertexTextureCoordId = gl.getAttribLocation(ctx.shaderProgram, "aVertexTextureCoord");
@@ -128,7 +129,8 @@ function draw() {
     gl.uniform4f(ctx.uColorId, 1,1,1,1);
 
     // drawMesh the mesh
-    terrain.mesh.drawMesh(gl, ctx.aVertexPositionId);
+    terrain.mesh.drawMesh(gl, ctx.aVertexPositionId, ctx.aVertexColorId);
+    //terrain.mesh.drawTriangles(gl, ctx.aVertexPositionId, ctx.aVertexColorId);
 }
 
 var first = true;
