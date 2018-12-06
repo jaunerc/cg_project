@@ -144,6 +144,7 @@ function draw() {
     configureModelNormalMat(viewMat);
 
     // drawMesh the mesh
+    //gl.uniform1i(ctx.uEnableLightingId, 0); // switch lighting
     //terrain.mesh.drawMesh(gl, ctx.aVertexPositionId, ctx.aVertexColorId);
     terrain.plane.draw(gl, ctx.aVertexPositionId, ctx.aVertexNormalId, ctx.aVertexColorId);
 }
