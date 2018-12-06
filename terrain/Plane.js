@@ -4,16 +4,28 @@ function Plane(gl, simplex, size) {
     function makeNoise(x, z, simplex) {
         return simplex.noise(x, z, 3, 2.0, 0.02);
     }
+
+    function createNoiseValues(size, simplex) {
+        var noiseValues = [];
+        for (var i  = 0; i < size; i++) {
+            var line = [];
+            for (var j = 0; j < size; j++) {
+                line.push(makeNoise(j, i, simplex));
+            }
+            noiseValues.push(line);
+        }
+        return noiseValues;
+    }
     
     function defineVertices(gl, size, simplex) {
         var vertices = [];
-
-        for (var i  = 0; i < size; i++) {
-            for (var j = 0; j < size; j++) {
-                vertices.push(j, i, makeNoise(j, i, simplex));
-                vertices.push(j + 1, i, makeNoise(j + 1, i, simplex));
-                vertices.push(j, i + 1, makeNoise(j, i + 1, simplex));
-                vertices.push(j + 1, i + 1, makeNoise(j + 1, i + 1, simplex));
+        var noiseValues = createNoiseValues(size, simplex);
+        for (var i  = 0; i < size-1; i++) {
+            for (var j = 0; j < size-1; j++) {
+                vertices.push(j, i, noiseValues[j][i]);
+                vertices.push(j + 1, i, noiseValues[j+1][i]);
+                vertices.push(j, i + 1, noiseValues[j][i+1]);
+                vertices.push(j + 1, i + 1, noiseValues[j+1][i+1]);
             }
         }
         console.log("num vertices: "+vertices.length);
