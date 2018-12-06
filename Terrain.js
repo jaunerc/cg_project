@@ -29,7 +29,7 @@ var scene = {
     eyePosition: [25, 55, 4],
     lookAtCenter: [25, 40, 4],
     lookAtUp: [0, 0, 5],
-    lightPosition: [1, 1, 1],
+    lightPosition: [-5, -5, 5],
     lightColor: [1, 1, 1],
     movementSpeed: 0.2,
     rotationSpeed: 0.05
@@ -66,10 +66,15 @@ function setUpAttributesAndUniforms() {
     // finds the index of the variables in the program
     ctx.aVertexPositionId = gl.getAttribLocation(ctx.shaderProgram, "aVertexPosition");
     ctx.aVertexColorId = gl.getAttribLocation(ctx.shaderProgram, "aVertexColor");
-    ctx.uColorId = gl.getUniformLocation(ctx.shaderProgram, "uColor");
-    ctx.uProjectionMatId = gl.getUniformLocation(ctx.shaderProgram, "uProjectionMat");
-    ctx.aVertexTextureCoordId = gl.getAttribLocation(ctx.shaderProgram, "aVertexTextureCoord");
+    ctx.aVertexNormalId = gl.getAttribLocation(ctx.shaderProgram, "aVertexNormal");
+
     ctx.uModelMatId = gl.getUniformLocation(ctx.shaderProgram, "uModelMat");
+    ctx.uNormalMatrixId = gl.getUniformLocation(ctx.shaderProgram, "uNormalMatrix");
+    ctx.uProjectionMatId = gl.getUniformLocation(ctx.shaderProgram, "uProjectionMat");
+
+    ctx.uEnableLightingId = gl.getUniformLocation(ctx.shaderProgram, "uEnableLighting");
+    ctx.uLightPositionId = gl.getUniformLocation(ctx.shaderProgram, "uLightPosition");
+    ctx.uLightColorId = gl.getUniformLocation(ctx.shaderProgram, "uLightColor");
 }
 
 /**
@@ -106,10 +111,14 @@ function configureViewMatrix() {
  * Configures the model view matrix of the terrain.
  * @param viewMat camera-view
  */
-function configureModelMat(viewMat) {
+function configureModelNormalMat(viewMat) {
     var modelMat = mat4.create();
     mat4.mul(modelMat, modelMat, viewMat);
     gl.uniformMatrix4fv(ctx.uModelMatId , false , modelMat);
+
+    var normalMat = mat3.create();
+    mat3.normalFromMat4(normalMat, modelMat);
+    gl.uniformMatrix3fv(ctx.uNormalMatrixId, false, normalMat);
 }
 
 /**
@@ -124,14 +133,19 @@ function draw() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.viewport(0,0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
+    // lighting
+    gl.uniform1i(ctx.uEnableLightingId, 1); // switch lighting
+    gl.uniform3fv(ctx.uLightPositionId, scene.lightPosition); // light position
+    gl.uniform3fv(ctx.uLightColorId, scene.lightColor); // light color
+
     // Do the matrix operations
     configureProjectiveMat();
     var viewMat = configureViewMatrix();
-    configureModelMat(viewMat);
+    configureModelNormalMat(viewMat);
 
     // drawMesh the mesh
     //terrain.mesh.drawMesh(gl, ctx.aVertexPositionId, ctx.aVertexColorId);
-    terrain.plane.draw(gl, ctx.aVertexPositionId, ctx.aVertexColorId);
+    terrain.plane.draw(gl, ctx.aVertexPositionId, ctx.aVertexNormalId, ctx.aVertexColorId);
 }
 
 var first = true;
