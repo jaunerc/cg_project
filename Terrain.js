@@ -28,11 +28,22 @@ var terrain = {
 var scene = {
     eyePosition: [25, 55, 4],
     lookAtCenter: [25, 40, 4],
-    lookAtUp: [0, 0, 5],
+    lookAtUp: [0, 0, 1],
     lightPosition: [-5, -5, 5],
-    lightColor: [1, 1, 1],
-    movementSpeed: 0.2,
-    rotationSpeed: 0.05
+    lightColor: [1, 1, 1]
+};
+
+/**
+ * Stores data for the camera movement
+ */
+var movement = {
+    translationMat: mat4.create(),
+    rotationMat: mat4.create(),
+    forwardVector: vec3.fromValues(0, 0.5, 0),
+    backwardVector: vec3.fromValues(0, -0.5, 0),
+    leftVector: vec3.fromValues(-0.5, 0, 0),
+    rightVector: vec3.fromValues(0.5, 0, 0),
+    rotationDegrees: glMatrix.toRadian(2)
 };
 
 /**
@@ -45,6 +56,7 @@ function startup() {
     initGL();
     window.addEventListener('keyup', onKeyup, false);
     window.addEventListener('keydown', onKeydown, false);
+    //mat4.translate(movement.translationMat, movement.translationMat, vec3.fromValues(25, 55, 0));
     window.requestAnimationFrame(drawAnimated);
 }
 
@@ -114,10 +126,12 @@ function configureViewMatrix() {
 function configureModelNormalMat(viewMat) {
     var modelMat = mat4.create();
     mat4.mul(modelMat, modelMat, viewMat);
-    gl.uniformMatrix4fv(ctx.uModelMatId , false , modelMat);
+    mat4.mul(modelMat, modelMat, movement.rotationMat);
+    mat4.mul(modelMat, modelMat, movement.translationMat);
+    gl.uniformMatrix4fv(ctx.uModelMatId, false, modelMat);
 
     var normalMat = mat3.create();
-    mat3.normalFromMat4(normalMat, modelMat);
+    mat3.normalFromMat4(normalMat, viewMat);
     gl.uniformMatrix3fv(ctx.uNormalMatrixId, false, normalMat);
 }
 
@@ -163,37 +177,39 @@ function drawAnimated(timeStamp) {
     // use the time since the last call
     // move or change objects with it
     if(key._pressed["w"]){
-        scene.eyePosition[1] = scene.eyePosition[1] - scene.movementSpeed;
-        scene.lookAtCenter[1] = scene.lookAtCenter[1] - scene.movementSpeed;
+        var atmForward = vec3.create();
+        vec3.transformMat4(atmForward, movement.forwardVector, movement.rotationMat);
+        mat4.translate(movement.translationMat, movement.translationMat, atmForward);
     }
     if (key._pressed["a"]){
-        scene.eyePosition[0] = scene.eyePosition[0] + scene.movementSpeed;
-        scene.lookAtCenter[0] = scene.lookAtCenter[0] + scene.movementSpeed;
+        var atmLeft = vec3.create();
+        vec3.transformMat4(atmLeft, movement.leftVector, movement.rotationMat);
+        mat4.translate(movement.translationMat, movement.translationMat, atmLeft);
     }
     if (key._pressed["s"]){
-        scene.eyePosition[1] = scene.eyePosition[1] + scene.movementSpeed;
-        scene.lookAtCenter[1] = scene.lookAtCenter[1] + scene.movementSpeed;
+        var atmBackward = vec3.create();
+        vec3.transformMat4(atmBackward, movement.backwardVector, movement.rotationMat);
+        mat4.translate(movement.translationMat, movement.translationMat, atmBackward);
     }
     if (key._pressed["d"]){
-        scene.eyePosition[0] = scene.eyePosition[0] - scene.movementSpeed;
-        scene.lookAtCenter[0] = scene.lookAtCenter[0] - scene.movementSpeed;
+        var atmRight = vec3.create();
+        vec3.transformMat4(atmRight, movement.rightVector, movement.rotationMat);
+        mat4.translate(movement.translationMat, movement.translationMat, atmRight);
     }
     if (key._pressed["e"]){ //turn right
-        scene.lookAtCenter[0] = scene.lookAtCenter[0] + scene.rotationSpeed;
-        scene.lookAtCenter[1] = scene.lookAtCenter[1] + scene.rotationSpeed;
+        mat4.rotate(movement.rotationMat, movement.rotationMat, movement.rotationDegrees, scene.lookAtUp);
     }
     if (key._pressed["q"]){ //turn left
-        scene.lookAtCenter[0] = scene.lookAtCenter[0] - scene.rotationSpeed;
-        scene.lookAtCenter[1] = scene.lookAtCenter[1] - scene.rotationSpeed;
+        mat4.rotate(movement.rotationMat, movement.rotationMat, -movement.rotationDegrees, scene.lookAtUp);
     }
-    if (key._pressed[","]){ //up
+    /*if (key._pressed[","]){ //up
         scene.eyePosition[2] = scene.eyePosition[2] + scene.movementSpeed;
         scene.lookAtCenter[2] = scene.lookAtCenter[2] + scene.movementSpeed;
     }
     if (key._pressed["."]){ //down
         scene.eyePosition[2] = scene.eyePosition[2] - scene.movementSpeed;
         scene.lookAtCenter[2] = scene.lookAtCenter[2] - scene.movementSpeed;
-    }
+    }*/
 
     draw();
     // request the next frame
