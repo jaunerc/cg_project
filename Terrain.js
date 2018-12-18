@@ -26,9 +26,9 @@ var terrain = {
  * Basic vectors for the scene (camera settings and light)
  */
 var scene = {
-    eyePosition: [0, 0, 4],
+    eyePosition: [0, 4, 0],
     lookAtCenter: [15, 0, 4],
-    lookAtUp: [0, 0, 1],
+    lookAtUp: [0, 1, 0],
     lightPosition: [-5, -5, 5],
     lightColor: [1, 1, 1]
 };
@@ -41,8 +41,8 @@ var movement = {
     rotationMat: mat4.create(),
     forwardVector: vec3.fromValues(-1, 0, 0),
     backwardVector: vec3.fromValues(1, 0, 0),
-    leftVector: vec3.fromValues(0, -1, 0),
-    rightVector: vec3.fromValues(0, 1, 0),
+    leftVector: vec3.fromValues(0, 0, 1),
+    rightVector: vec3.fromValues(0, 0, -1),
     rotationDegrees: glMatrix.toRadian(2)
 };
 

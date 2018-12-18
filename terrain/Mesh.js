@@ -10,7 +10,7 @@ function Mesh(gl, simplex, size) {
         for (var i = 0; i < size; i++) {
             for (var j = 0; j < size; j++) {
                 var v = makeNoise(j, i);
-                vertices.push(i, j, v);
+                vertices.push(i, v, j);
             }
         }
 

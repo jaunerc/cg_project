@@ -22,10 +22,10 @@ function Plane(gl, simplex, size) {
         var noiseValues = createNoiseValues(size, simplex);
         for (var i  = 0; i < size-1; i++) {
             for (var j = 0; j < size-1; j++) {
-                vertices.push(j, i, noiseValues[j][i]);
-                vertices.push(j + 1, i, noiseValues[j+1][i]);
-                vertices.push(j, i + 1, noiseValues[j][i+1]);
-                vertices.push(j + 1, i + 1, noiseValues[j+1][i+1]);
+                vertices.push(j, noiseValues[j][i], i);
+                vertices.push(j + 1, noiseValues[j+1][i], i);
+                vertices.push(j, noiseValues[j][i+1], i + 1);
+                vertices.push(j + 1, noiseValues[j+1][i+1], i + 1);
             }
         }
         console.log("num vertices: "+vertices.length);
