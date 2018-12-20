@@ -1,5 +1,5 @@
 
-function NoiseCalculator(seed) {
+function NoiseCalculator(seed, octaves, scale) {
     
     function prepareSimplex(seed) {
         return new SimplexNoise(seed);
@@ -7,15 +7,15 @@ function NoiseCalculator(seed) {
     
     return {
         simplex: prepareSimplex(seed),
-        noise: function (x, y, octaves, roughness, scale) {
+        octaves: octaves,
+        scale: scale,
+        noise: function (x, y) {
             var noise = 0.0;
-            var layerFrequency = scale;
-            var layerWeight = 1.0;
+            var layerFrequency = this.scale;
 
-            for (var i = 0; i < octaves; i++) {
+            for (var i = 0; i < this.octaves; i++) {
                 noise += this.simplex.noise2D(x * layerFrequency, y * layerFrequency);
                 layerFrequency *= 2;
-                layerWeight *= roughness;
             }
 
             return noise;

@@ -98,10 +98,14 @@ function setUpAttributesAndUniforms() {
 function prepareTerrain() {
     var seedText = document.getElementById("seedText");
     var sizeSlider = document.getElementById("worldSize");
+    var scaleSlider = document.getElementById("scale");
+    var octavesSlider = document.getElementById("octaves");
 
-    var simplex = new NoiseCalculator(seedText.value);
     var size = parseInt(sizeSlider.value);
-    
+    var scale = parseInt(scaleSlider.value) / 1000;
+    var octaves = parseInt(octavesSlider.value);
+    var simplex = new NoiseCalculator(seedText.value, octaves, scale);
+
     terrain.mesh = new Mesh(gl, simplex, size);
     terrain.plane = new Plane(gl, simplex, size);
     terrain.lowPoly = new LowPoly(gl, simplex, size);

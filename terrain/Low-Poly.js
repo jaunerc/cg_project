@@ -2,7 +2,7 @@
 function LowPoly(gl, simplex, size) {
 
     function makeNoise(x, z, simplex) {
-        return simplex.noise(x, z, 3, 2.0, 0.02);
+        return simplex.noise(x, z);
     }
 
     function createNoiseValues(size, simplex) {
@@ -48,7 +48,6 @@ function LowPoly(gl, simplex, size) {
             ac[2]*bc[0] - ac[0]*bc[2],
             ac[0]*bc[1] - ac[1]*bc[0]
         ];
-//console.log(cross);
         return cross;
     }
 
@@ -104,21 +103,21 @@ function LowPoly(gl, simplex, size) {
         var numColors = (size - 1) * (size - 1) * 12;
 
         for (var i = 0; i < numColors; i+=24) {
-            colors.push(1, 1, 0);
-            colors.push(1, 1, 0);
-            colors.push(1, 1, 0);
+            colors.push(0.584, 0.788, 0.172);
+            colors.push(0.584, 0.788, 0.172);
+            colors.push(0.584, 0.788, 0.172);
 
-            colors.push(1, 1, 0);
-            colors.push(1, 1, 0);
-            colors.push(1, 1, 0);
+            colors.push(0.584, 0.788, 0.172);
+            colors.push(0.584, 0.788, 0.172);
+            colors.push(0.584, 0.788, 0.172);
 
-            colors.push(0, 0, 1);
-            colors.push(0, 0, 1);
-            colors.push(0, 0, 1);
-
-            colors.push(0, 0, 1);
-            colors.push(0, 0, 1);
-            colors.push(0, 0, 1);
+            colors.push(0.584, 0.788, 0.172);
+            colors.push(0.584, 0.788, 0.172);
+            colors.push(0.584, 0.788, 0.172);
+            
+            colors.push(0.584, 0.788, 0.172);
+            colors.push(0.584, 0.788, 0.172);
+            colors.push(0.584, 0.788, 0.172);
         }
 
         var colorsBuffer = gl.createBuffer();

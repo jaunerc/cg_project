@@ -2,7 +2,7 @@
 function Plane(gl, simplex, size) {
 
     function makeNoise(x, z, simplex) {
-        return simplex.noise(x, z, 3, 2.0, 0.02);
+        return simplex.noise(x, z);
     }
 
     function createNoiseValues(size, simplex) {
