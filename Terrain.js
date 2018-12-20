@@ -29,7 +29,7 @@ var scene = {
     eyePosition: [0, 4, 0],
     lookAtCenter: [15, 0, 4],
     lookAtUp: [0, 1, 0],
-    lightPosition: [-5, -5, 5],
+    lightPosition: [5, 5, 5],
     lightColor: [1, 1, 1]
 };
 
@@ -178,22 +178,31 @@ function drawAnimated(timeStamp) {
     // move or change objects with it
     if(key._pressed["w"]){
         var atmForward = vec3.create();
-        vec3.transformMat4(atmForward, movement.forwardVector, movement.rotationMat);
+        var tmp = mat4.create();
+        mat4.invert(tmp, movement.rotationMat);
+        vec3.transformMat4(atmForward, movement.forwardVector, tmp);
         mat4.translate(movement.translationMat, movement.translationMat, atmForward);
+        console.log(atmForward);
     }
     if (key._pressed["a"]){
         var atmLeft = vec3.create();
-        vec3.transformMat4(atmLeft, movement.leftVector, movement.rotationMat);
+        var tmp = mat4.create();
+        mat4.invert(tmp, movement.rotationMat);
+        vec3.transformMat4(atmLeft, movement.leftVector, tmp);
         mat4.translate(movement.translationMat, movement.translationMat, atmLeft);
     }
     if (key._pressed["s"]){
         var atmBackward = vec3.create();
-        vec3.transformMat4(atmBackward, movement.backwardVector, movement.rotationMat);
+        var tmp = mat4.create();
+        mat4.invert(tmp, movement.rotationMat);
+        vec3.transformMat4(atmBackward, movement.backwardVector, tmp);
         mat4.translate(movement.translationMat, movement.translationMat, atmBackward);
     }
     if (key._pressed["d"]){
         var atmRight = vec3.create();
-        vec3.transformMat4(atmRight, movement.rightVector, movement.rotationMat);
+        var tmp = mat4.create();
+        mat4.invert(tmp, movement.rotationMat);
+        vec3.transformMat4(atmRight, movement.rightVector, tmp);
         mat4.translate(movement.translationMat, movement.translationMat, atmRight);
     }
     if (key._pressed["e"]){ //turn right
