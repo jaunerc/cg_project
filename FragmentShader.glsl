@@ -14,7 +14,7 @@ uniform sampler2D uSampler;
 
 const float ambientFactor = 0.5;
 const float shininess = 10.0;
-const vec3 specularMaterialColor = vec3(0.4, 0.4, 0.4);
+const vec3 specularMaterialColor = vec3(0.2, 0.2, 0.2);
 
 void main() {
     //gl_FragColor = vec4(vColor.rgb, 1);
@@ -27,23 +27,22 @@ void main() {
         vec3 normal = normalize(vNormalEye);
 
         // ambient lighting
-        vec3 ambientColor = ambientFactor * baseColor.rgb;
+        vec3 ambientColor = ambientFactor * baseColor.rgb * uLightColor;
 
         // diffuse lighting
         float diffuseFactor = 1.0;
         float cos_angle = dot(normal, lightDirectionEye);
         cos_angle = clamp(cos_angle, 0.0, 1.0);
-        vec3 diffuseColor = baseColor.rgb * cos_angle;
+        vec3 diffuseColor = baseColor.rgb * cos_angle * uLightColor;
 
         // specular lighting
         vec3 specularColor = vec3(0, 0, 0);
         if (diffuseFactor > 0.0) {
             vec3 reflectionDir = normalize(2.0 * dot(normal, lightDirectionEye) * normal - lightDirectionEye);
-            vec3 eyeDir = normalize(-1.0 * vVertexPositionEye3);
+            vec3 eyeDir = -normalize(vVertexPositionEye3);
             float cosPhi = clamp(dot(reflectionDir, eyeDir), 0.0, 1.0);
-            cosPhi = pow(cosPhi, shininess);
-            float specularFactor = 0.4;
-            specularColor = specularFactor * (specularMaterialColor + uLightColor * cosPhi);
+            float specularFactor = pow(cosPhi, shininess);
+            specularColor = specularFactor * specularMaterialColor * uLightColor;
         }
 
         vec3 color = ambientColor + diffuseColor + specularColor;

@@ -31,7 +31,6 @@ function LowPoly(gl, simplex, size) {
                 vertices.push(j, noiseValues[j][i+1], i + 1);
             }
         }
-        console.log("num vertices: "+vertices.length / 3);
 
         var verticesBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
@@ -61,20 +60,18 @@ function LowPoly(gl, simplex, size) {
                 var v2 = [j + 1, noiseValues[j+1][i], i];
                 var v3 = [j, noiseValues[j][i+1], i + 1];
 
-                var n = calcNormalPerTriangle(v1, v2, v3);
+                var n = calcNormalPerTriangle(v2, v1, v3);
                 normals.push(n[0], n[1], n[2]);
                 normals.push(n[0], n[1], n[2]);
                 normals.push(n[0], n[1], n[2]);
 
                 var v4 = [j + 1, noiseValues[j+1][i+1], i + 1];
-                n = calcNormalPerTriangle(v4, v3, v2);
+                n = calcNormalPerTriangle(v2, v3, v4);
                 normals.push(n[0], n[1], n[2]);
                 normals.push(n[0], n[1], n[2]);
                 normals.push(n[0], n[1], n[2]);
             }
         }
-
-        console.log("num normals: " + normals.length / 3);
 
         var normalsBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, normalsBuffer);
@@ -90,7 +87,6 @@ function LowPoly(gl, simplex, size) {
             triangles.push(i, i + 1, i + 2);
             triangles.push(i + 3, i + 4, i + 5);
         }
-        console.log("num triangles: "+numTriangles);
 
         var trianglesBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, trianglesBuffer);
@@ -102,22 +98,23 @@ function LowPoly(gl, simplex, size) {
         var colors = [];
         var numColors = (size - 1) * (size - 1) * 12;
 
+        var v = [1, 1, 0];
         for (var i = 0; i < numColors; i+=24) {
-            colors.push(0.584, 0.788, 0.172);
-            colors.push(0.584, 0.788, 0.172);
-            colors.push(0.584, 0.788, 0.172);
+            colors.push(v[0], v[1], v[2]);
+            colors.push(v[0], v[1], v[2]);
+            colors.push(v[0], v[1], v[2]);
 
-            colors.push(0.584, 0.788, 0.172);
-            colors.push(0.584, 0.788, 0.172);
-            colors.push(0.584, 0.788, 0.172);
+            colors.push(v[0], v[1], v[2]);
+            colors.push(v[0], v[1], v[2]);
+            colors.push(v[0], v[1], v[2]);
 
-            colors.push(0.584, 0.788, 0.172);
-            colors.push(0.584, 0.788, 0.172);
-            colors.push(0.584, 0.788, 0.172);
-            
-            colors.push(0.584, 0.788, 0.172);
-            colors.push(0.584, 0.788, 0.172);
-            colors.push(0.584, 0.788, 0.172);
+            colors.push(v[0], v[1], v[2]);
+            colors.push(v[0], v[1], v[2]);
+            colors.push(v[0], v[1], v[2]);
+
+            colors.push(v[0], v[1], v[2]);
+            colors.push(v[0], v[1], v[2]);
+            colors.push(v[0], v[1], v[2]);
         }
 
         var colorsBuffer = gl.createBuffer();
@@ -140,8 +137,7 @@ function LowPoly(gl, simplex, size) {
             gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferColors);
             gl.vertexAttribPointer(aVertexColorId, 3, gl.FLOAT, false, 0, 0);
             gl.enableVertexAttribArray(aVertexColorId);
-            //gl.disableVertexAttribArray(aVertexColorId);
-            //gl.vertexAttrib3f(aVertexColorId, 1,1, 1);
+            
             gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferNormals);
             gl.vertexAttribPointer(aVertexNormalId, 3, gl.FLOAT, false, 0, 0);
             gl.enableVertexAttribArray(aVertexNormalId);

@@ -28,9 +28,9 @@ var terrain = {
  */
 var scene = {
     eyePosition: [0, 4, 0],
-    lookAtCenter: [15, 0, 4],
+    lookAtCenter: [4, 3, 0],
     lookAtUp: [0, 1, 0],
-    lightPosition: [5, -10, 5],
+    lightPosition: [0, 10, 0],
     lightColor: [1, 1, 1],
     showMesh: false,
     showPoly: true,
@@ -71,7 +71,7 @@ function initGL() {
     ctx.shaderProgram = loadAndCompileShaders(gl, 'VertexShader.glsl', 'FragmentShader.glsl');
     setUpAttributesAndUniforms();
     prepareTerrain();
-    gl.clearColor(0, 0, 0, 1);
+    gl.clearColor(0.4, 0.823, 1, 1);
 }
 
 /**
@@ -160,7 +160,6 @@ function draw() {
     gl.viewport(0,0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
     // lighting
-    gl.uniform1i(ctx.uEnableLightingId, 1); // switch lighting
     gl.uniform3fv(ctx.uLightPositionId, scene.lightPosition); // light position
     gl.uniform3fv(ctx.uLightColorId, scene.lightColor); // light color
 
