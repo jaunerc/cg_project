@@ -12,7 +12,7 @@ varying vec3 vColor;
 varying vec2 vTextureCoord;
 uniform sampler2D uSampler;
 
-const float ambientFactor = 0.2;
+const float ambientFactor = 0.5;
 const float shininess = 10.0;
 const vec3 specularMaterialColor = vec3(0.4, 0.4, 0.4);
 

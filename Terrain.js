@@ -31,7 +31,10 @@ var scene = {
     lookAtCenter: [15, 0, 4],
     lookAtUp: [0, 1, 0],
     lightPosition: [5, -10, 5],
-    lightColor: [1, 1, 1]
+    lightColor: [1, 1, 1],
+    showMesh: false,
+    showPoly: true,
+    showSquared: false
 };
 
 /**
@@ -159,12 +162,19 @@ function draw() {
     var viewMat = configureViewMatrix();
     configureModelNormalMat(viewMat);
 
-    gl.uniform1i(ctx.uEnableLightingId, 1); // switch lighting
-    //terrain.plane.draw(gl, ctx.aVertexPositionId, ctx.aVertexNormalId, ctx.aVertexColorId);
-    terrain.lowPoly.draw(gl, ctx.aVertexPositionId, ctx.aVertexNormalId, ctx.aVertexColorId);
-    // drawMesh the mesh
-    gl.uniform1i(ctx.uEnableLightingId, 0); // switch lighting
-    //terrain.mesh.drawMesh(gl, ctx.aVertexPositionId, ctx.aVertexColorId);
+    if (scene.showMesh) {
+        gl.uniform1i(ctx.uEnableLightingId, 0); // disable lighting
+        terrain.mesh.drawMesh(gl, ctx.aVertexPositionId, ctx.aVertexColorId);
+    }
+
+    gl.uniform1i(ctx.uEnableLightingId, 1); // enable lighting
+    if (scene.showPoly) {
+        terrain.lowPoly.draw(gl, ctx.aVertexPositionId, ctx.aVertexNormalId, ctx.aVertexColorId);
+    }
+
+    if (scene.showSquared) {
+        terrain.plane.draw(gl, ctx.aVertexPositionId, ctx.aVertexNormalId, ctx.aVertexColorId);
+    }
 }
 
 var first = true;
@@ -243,4 +253,21 @@ function onKeydown(event) {
 
 function onKeyup(event) {
     delete key._pressed[event.key];
+}
+
+function onShowMeshClick() {
+    var checkBox = document.getElementById("showMesh");
+    scene.showMesh = checkBox.checked;
+}
+
+
+function onShowPolyClick() {
+    var checkBox = document.getElementById("showPoly");
+    scene.showPoly = checkBox.checked;
+}
+
+
+function onShowSquaredClick() {
+    var checkBox = document.getElementById("showSquared");
+    scene.showSquared = checkBox.checked;
 }
