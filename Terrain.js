@@ -29,7 +29,7 @@ var scene = {
     eyePosition: [0, 4, 0],
     lookAtCenter: [15, 0, 4],
     lookAtUp: [0, 1, 0],
-    lightPosition: [5, 5, 5],
+    lightPosition: [5, -10, 5],
     lightColor: [1, 1, 1]
 };
 

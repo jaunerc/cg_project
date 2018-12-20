@@ -59,9 +59,9 @@ function Plane(gl, simplex, size) {
 
         for (var i  = 0; i < size-1; i++) {
             for (var j = 0; j < size - 1; j++) {
-                var v1 = [j, i, noiseValues[j][i]];
-                var v2 = [j+1, i, noiseValues[j+1][i]];
-                var v3 = [j, i + 1, noiseValues[j][i+1]];
+                var v1 = [j, noiseValues[j][i], i];
+                var v2 = [j + 1, noiseValues[j+1][i], i];
+                var v3 = [j, noiseValues[j][i+1], i + 1];
                 var n = calcNormalPerTriangle(v1, v2, v3);
                 normals.push(n[0], n[1], n[2]);
                 normals.push(n[0], n[1], n[2]);
