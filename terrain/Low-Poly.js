@@ -1,5 +1,5 @@
 
-function Plane(gl, simplex, size) {
+function LowPoly(gl, simplex, size) {
 
     function makeNoise(x, z, simplex) {
         return simplex.noise(x, z, 3, 2.0, 0.02);
@@ -20,12 +20,15 @@ function Plane(gl, simplex, size) {
     function defineVertices(gl, size, simplex) {
         var vertices = [];
         var noiseValues = createNoiseValues(size, simplex);
-        for (var i  = 0; i < size-1; i++) {
-            for (var j = 0; j < size-1; j++) {
+        for (var i  = 0; i < size - 1; i++) {
+            for (var j = 0; j < size - 1; j++) {
                 vertices.push(j, noiseValues[j][i], i);
                 vertices.push(j + 1, noiseValues[j+1][i], i);
                 vertices.push(j, noiseValues[j][i+1], i + 1);
+
                 vertices.push(j + 1, noiseValues[j+1][i+1], i + 1);
+                vertices.push(j + 1, noiseValues[j+1][i], i);
+                vertices.push(j, noiseValues[j][i+1], i + 1);
             }
         }
         console.log("num vertices: "+vertices.length / 3);
@@ -40,16 +43,12 @@ function Plane(gl, simplex, size) {
         var ac = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
         var bc = [c[0] - b[0], c[1] - b[1], c[2] - b[2]];
 
-        /**var dot = ac[0]*bc[0] + ac[1]*bc[1] + ac[2]*bc[2];
-        var acLen = Math.sqrt(Math.pow(ac[0], 2) + Math.pow(ac[1], 2) + Math.pow(ac[2], 2));
-        var bcLen = Math.sqrt(Math.pow(bc[0], 2) + Math.pow(bc[1], 2) + Math.pow(bc[2], 2));
-        var phi = Math.acos(dot / (acLen * bcLen));*/
         var cross = [
             ac[1]*bc[2] - bc[1]*ac[2],
             ac[2]*bc[0] - ac[0]*bc[2],
             ac[0]*bc[1] - ac[1]*bc[0]
         ];
-
+//console.log(cross);
         return cross;
     }
 
@@ -62,8 +61,14 @@ function Plane(gl, simplex, size) {
                 var v1 = [j, noiseValues[j][i], i];
                 var v2 = [j + 1, noiseValues[j+1][i], i];
                 var v3 = [j, noiseValues[j][i+1], i + 1];
+
                 var n = calcNormalPerTriangle(v1, v2, v3);
                 normals.push(n[0], n[1], n[2]);
+                normals.push(n[0], n[1], n[2]);
+                normals.push(n[0], n[1], n[2]);
+
+                var v4 = [j + 1, noiseValues[j+1][i+1], i + 1];
+                n = calcNormalPerTriangle(v4, v3, v2);
                 normals.push(n[0], n[1], n[2]);
                 normals.push(n[0], n[1], n[2]);
                 normals.push(n[0], n[1], n[2]);
@@ -82,11 +87,11 @@ function Plane(gl, simplex, size) {
         var triangles = [];
         var numTriangles = (size) * (size) * 6;
 
-        for (var i = 0; i < numTriangles; i+=4) {
+        for (var i = 0; i < numTriangles; i+=6) {
             triangles.push(i, i + 1, i + 2);
-            triangles.push(i + 1, i + 2, i + 3);
+            triangles.push(i + 3, i + 4, i + 5);
         }
-        console.log("num triangles: "+triangles.length / 3 / 6);
+        console.log("num triangles: "+numTriangles);
 
         var trianglesBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, trianglesBuffer);
@@ -98,13 +103,19 @@ function Plane(gl, simplex, size) {
         var colors = [];
         var numColors = (size - 1) * (size - 1) * 12;
 
-        for (var i = 0; i < numColors; i+=12) {
+        for (var i = 0; i < numColors; i+=24) {
             colors.push(1, 1, 0);
+            colors.push(1, 1, 0);
+            colors.push(1, 1, 0);
+
             colors.push(1, 1, 0);
             colors.push(1, 1, 0);
             colors.push(1, 1, 0);
 
             colors.push(0, 0, 1);
+            colors.push(0, 0, 1);
+            colors.push(0, 0, 1);
+
             colors.push(0, 0, 1);
             colors.push(0, 0, 1);
             colors.push(0, 0, 1);

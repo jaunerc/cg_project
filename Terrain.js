@@ -19,7 +19,8 @@ var ctx = {
 
 var terrain = {
     mesh: null,
-    plane: null
+    plane: null,
+    lowPoly: null
 };
 
 /**
@@ -97,6 +98,7 @@ function prepareTerrain() {
     var size = 50;
     terrain.mesh = new Mesh(gl, simplex, size);
     terrain.plane = new Plane(gl, simplex, size);
+    terrain.lowPoly = new LowPoly(gl, simplex, size);
 }
 
 /**
@@ -157,10 +159,12 @@ function draw() {
     var viewMat = configureViewMatrix();
     configureModelNormalMat(viewMat);
 
+    gl.uniform1i(ctx.uEnableLightingId, 1); // switch lighting
+    //terrain.plane.draw(gl, ctx.aVertexPositionId, ctx.aVertexNormalId, ctx.aVertexColorId);
+    terrain.lowPoly.draw(gl, ctx.aVertexPositionId, ctx.aVertexNormalId, ctx.aVertexColorId);
     // drawMesh the mesh
-    //gl.uniform1i(ctx.uEnableLightingId, 0); // switch lighting
+    gl.uniform1i(ctx.uEnableLightingId, 0); // switch lighting
     //terrain.mesh.drawMesh(gl, ctx.aVertexPositionId, ctx.aVertexColorId);
-    terrain.plane.draw(gl, ctx.aVertexPositionId, ctx.aVertexNormalId, ctx.aVertexColorId);
 }
 
 var first = true;
@@ -182,7 +186,6 @@ function drawAnimated(timeStamp) {
         mat4.invert(tmp, movement.rotationMat);
         vec3.transformMat4(atmForward, movement.forwardVector, tmp);
         mat4.translate(movement.translationMat, movement.translationMat, atmForward);
-        console.log(atmForward);
     }
     if (key._pressed["a"]){
         var atmLeft = vec3.create();

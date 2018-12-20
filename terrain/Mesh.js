@@ -57,7 +57,7 @@ function Mesh(gl, simplex, size) {
 
             // sets just one color for all lines
             gl.disableVertexAttribArray(aVertexColorId);
-            gl.vertexAttrib3f(aVertexColorId, 1,1, 1);
+            gl.vertexAttrib3f(aVertexColorId, 0,0, 0);
 
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferLines);
             var numLines = (this.size-1) * (this.size-1) * 6;
