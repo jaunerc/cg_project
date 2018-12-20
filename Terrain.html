@@ -21,13 +21,19 @@
         <h1>Terrain</h1>
     </div>
     <div class="column middle">
-        <canvas id="myCanvas" width="1200" height="800"></canvas >
+        <canvas id="myCanvas" width="1200" height="800" tabindex="1"></canvas>
     </div>
     <div class="column side">
         <p class="heading">Parameters</p>
         <input type="checkbox" id="showMesh" onclick="onShowMeshClick()"> show mesh<br>
         <input type="checkbox" id="showPoly" checked onclick="onShowPolyClick()"> show poly<br>
         <input type="checkbox" id="showSquared" onclick="onShowSquaredClick()"> show squared<br>
+        <br>
+        terrain seed
+        <input type="text" id="seedText" value="asdf"><br><br>
+        world size
+        <input type="range" min="20" max="100" value="50" id="worldSize">
+        <button type="button" onclick="onNewTerrainButtonClick()">New terrain</button>
     </div>
 </div>
 </body>

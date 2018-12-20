@@ -58,9 +58,8 @@ function startup() {
     var canvas = document.getElementById("myCanvas");
     gl = createGLContext(canvas);
     initGL();
-    window.addEventListener('keyup', onKeyup, false);
-    window.addEventListener('keydown', onKeydown, false);
-    //mat4.translate(movement.translationMat, movement.translationMat, vec3.fromValues(25, 55, 0));
+    canvas.addEventListener('keyup', onKeyup, true);
+    canvas.addEventListener('keydown', onKeydown, true);
     window.requestAnimationFrame(drawAnimated);
 }
 
@@ -97,8 +96,12 @@ function setUpAttributesAndUniforms() {
  * Prepares the terrain. Initializes a noise calculator and the mesh.
  */
 function prepareTerrain() {
-    var simplex = new NoiseCalculator();
-    var size = 50;
+    var seedText = document.getElementById("seedText");
+    var sizeSlider = document.getElementById("worldSize");
+
+    var simplex = new NoiseCalculator(seedText.value);
+    var size = parseInt(sizeSlider.value);
+    
     terrain.mesh = new Mesh(gl, simplex, size);
     terrain.plane = new Plane(gl, simplex, size);
     terrain.lowPoly = new LowPoly(gl, simplex, size);
@@ -270,4 +273,8 @@ function onShowPolyClick() {
 function onShowSquaredClick() {
     var checkBox = document.getElementById("showSquared");
     scene.showSquared = checkBox.checked;
+}
+
+function onNewTerrainButtonClick() {
+    prepareTerrain();
 }

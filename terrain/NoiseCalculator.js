@@ -1,12 +1,12 @@
 
-function NoiseCalculator() {
+function NoiseCalculator(seed) {
     
-    function prepareSimplex() {
-        return new SimplexNoise();
+    function prepareSimplex(seed) {
+        return new SimplexNoise(seed);
     }
     
     return {
-        simplex: prepareSimplex(),
+        simplex: prepareSimplex(seed),
         noise: function (x, y, octaves, roughness, scale) {
             var noise = 0.0;
             var layerFrequency = scale;
