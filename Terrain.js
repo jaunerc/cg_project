@@ -30,7 +30,7 @@ var scene = {
     eyePosition: [0, 4, 0],
     lookAtCenter: [4, 3, 0],
     lookAtUp: [0, 1, 0],
-    lightPosition: [0, 10, 0],
+    lightPosition: [0, 2, 0],
     lightColor: [1, 1, 1],
     showMesh: false,
     showPoly: true,
@@ -43,10 +43,12 @@ var scene = {
 var movement = {
     translationMat: mat4.create(),
     rotationMat: mat4.create(),
-    forwardVector: vec3.fromValues(-1, 0, 0),
-    backwardVector: vec3.fromValues(1, 0, 0),
-    leftVector: vec3.fromValues(0, 0, 1),
-    rightVector: vec3.fromValues(0, 0, -1),
+    forwardVector: vec3.fromValues(-.5, 0, 0),
+    backwardVector: vec3.fromValues(.5, 0, 0),
+    leftVector: vec3.fromValues(0, 0, .5),
+    rightVector: vec3.fromValues(0, 0, -.5),
+    upVector: vec3.fromValues(0, -.5, 0),
+    downVector: vec3.fromValues(0, .5, 0),
     rotationDegrees: glMatrix.toRadian(2)
 };
 
@@ -230,14 +232,12 @@ function drawAnimated(timeStamp) {
     if (key._pressed["q"]){ //turn left
         mat4.rotate(movement.rotationMat, movement.rotationMat, -movement.rotationDegrees, scene.lookAtUp);
     }
-    /*if (key._pressed[","]){ //up
-        scene.eyePosition[2] = scene.eyePosition[2] + scene.movementSpeed;
-        scene.lookAtCenter[2] = scene.lookAtCenter[2] + scene.movementSpeed;
+    if (key._pressed[","]){ //up
+        mat4.translate(movement.translationMat, movement.translationMat, movement.upVector);
     }
     if (key._pressed["."]){ //down
-        scene.eyePosition[2] = scene.eyePosition[2] - scene.movementSpeed;
-        scene.lookAtCenter[2] = scene.lookAtCenter[2] - scene.movementSpeed;
-    }*/
+        mat4.translate(movement.translationMat, movement.translationMat, movement.downVector);
+    }
 
     draw();
     // request the next frame

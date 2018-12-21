@@ -32,6 +32,8 @@ function LowPoly(gl, simplex, size) {
             }
         }
 
+        console.log("num vertices: "+vertices.length / 3);
+
         var verticesBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
@@ -72,6 +74,7 @@ function LowPoly(gl, simplex, size) {
                 normals.push(n[0], n[1], n[2]);
             }
         }
+        console.log("num normals: "+normals.length / 3);
 
         var normalsBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, normalsBuffer);
@@ -96,26 +99,32 @@ function LowPoly(gl, simplex, size) {
     
     function defineColors(gl, size) {
         var colors = [];
-        var numColors = (size - 1) * (size - 1) * 12;
+        var noiseValues = createNoiseValues(size, simplex);
 
-        var v = [1, 1, 0];
-        for (var i = 0; i < numColors; i+=24) {
-            colors.push(v[0], v[1], v[2]);
-            colors.push(v[0], v[1], v[2]);
-            colors.push(v[0], v[1], v[2]);
+        var ground = [0.219, 0.25, 0.004];
+        var middle = [0.404, 0.349, 0.196];
+        var snow = [1, 1, 1];
+        for (var i  = 0; i < size-1; i++) {
+            for (var j = 0; j < size - 1; j++) {
+                var color = null;
+                if (noiseValues[j][i] < -0.5) {
+                    color = ground;
+                } else if(noiseValues[j][i] < 0.3) {
+                    color = middle;
+                } else {
+                    color = snow;
+                }
+                colors.push(color[0], color[1], color[2]);
+                colors.push(color[0], color[1], color[2]);
+                colors.push(color[0], color[1], color[2]);
 
-            colors.push(v[0], v[1], v[2]);
-            colors.push(v[0], v[1], v[2]);
-            colors.push(v[0], v[1], v[2]);
-
-            colors.push(v[0], v[1], v[2]);
-            colors.push(v[0], v[1], v[2]);
-            colors.push(v[0], v[1], v[2]);
-
-            colors.push(v[0], v[1], v[2]);
-            colors.push(v[0], v[1], v[2]);
-            colors.push(v[0], v[1], v[2]);
+                colors.push(color[0], color[1], color[2]);
+                colors.push(color[0], color[1], color[2]);
+                colors.push(color[0], color[1], color[2]);
+            }
         }
+
+        console.log("num colors: "+colors.length / 3);
 
         var colorsBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, colorsBuffer);

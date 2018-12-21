@@ -28,7 +28,6 @@ function Plane(gl, simplex, size) {
                 vertices.push(j + 1, noiseValues[j+1][i+1], i + 1);
             }
         }
-        console.log("num vertices: "+vertices.length / 3);
 
         var verticesBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
@@ -40,10 +39,6 @@ function Plane(gl, simplex, size) {
         var ac = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
         var bc = [c[0] - b[0], c[1] - b[1], c[2] - b[2]];
 
-        /**var dot = ac[0]*bc[0] + ac[1]*bc[1] + ac[2]*bc[2];
-        var acLen = Math.sqrt(Math.pow(ac[0], 2) + Math.pow(ac[1], 2) + Math.pow(ac[2], 2));
-        var bcLen = Math.sqrt(Math.pow(bc[0], 2) + Math.pow(bc[1], 2) + Math.pow(bc[2], 2));
-        var phi = Math.acos(dot / (acLen * bcLen));*/
         var cross = [
             ac[1]*bc[2] - bc[1]*ac[2],
             ac[2]*bc[0] - ac[0]*bc[2],
@@ -70,8 +65,6 @@ function Plane(gl, simplex, size) {
             }
         }
 
-        console.log("num normals: " + normals.length / 3);
-
         var normalsBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, normalsBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
@@ -86,7 +79,6 @@ function Plane(gl, simplex, size) {
             triangles.push(i, i + 1, i + 2);
             triangles.push(i + 1, i + 2, i + 3);
         }
-        console.log("num triangles: "+triangles.length / 3 / 6);
 
         var trianglesBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, trianglesBuffer);
